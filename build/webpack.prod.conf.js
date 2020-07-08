@@ -20,7 +20,7 @@ const env = process.env.NODE_ENV === 'testing'
   : require('../config/prod.env')
 
 const webpackConfig = merge(baseWebpackConfig, {
-  mode:"production",
+  mode: "production",
   module: {
     rules: utils.styleLoaders({
       sourceMap: config.build.productionSourceMap,
@@ -47,22 +47,22 @@ const webpackConfig = merge(baseWebpackConfig, {
       maxAsyncRequests: 5, //异步模块,一次最多只能被加载5个,
       maxInitialRequests: 3, //入口模块最多只能加载3个
       name: true, //拆分出来块的名字(Chunk Names)，默认由块名和hash值自动生成；设置为true则表示根据模块和缓存组秘钥自动生成
-      cacheGroups:{
-        default:{
-          minChunks:2,
-          reuseExistingChunk:true,
+      cacheGroups: {
+        default: {
+          minChunks: 2,
+          reuseExistingChunk: true
         },
         //packing repeat coding
-        vendor:{
-          chunks:'all',
-          minChunks:2,
-          name:'vendor'
+        vendor: {
+          chunks: "all",
+          minChunks: 2,
+          name: "vendor"
         },
         //packing third dependencies lib package
-        commons:{
-          chunks:'all',
-          name:'commons',
-          minChunks:Infinity
+        commons: {
+          chunks: "all",
+          name: "commons",
+          minChunks: Infinity
         }
       }
     }
@@ -91,8 +91,8 @@ const webpackConfig = merge(baseWebpackConfig, {
     //   allChunks: true
     // }),
     new MiniCssExtractPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash].css'),
-      allChunks:true,
+      filename: utils.assetsPath("css/[name].[contenthash].css"),
+      allChunks: true
     }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
@@ -109,6 +109,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         process.env.NODE_ENV === "testing" ? "index.html" : config.build.index,
       template: "index.html",
       inject: true,
+      favicon: path.resolve("favicon.ico"),
       minify: {
         removeComments: true,
         collapseWhitespace: true,
