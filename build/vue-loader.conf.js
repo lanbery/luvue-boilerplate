@@ -14,9 +14,15 @@ module.exports = {
   cssSourceMap: sourceMapEnabled,
   cacheBusting: config.dev.cacheBusting,
   transformToRequire: {
-    video: ['src', 'poster'],
-    source: 'src',
-    img: 'src',
-    image: 'xlink:href'
+    video: ["src", "poster"],
+    source: "src",
+    img: "src",
+    image: "xlink:href"
+  },
+  analyzOption: {
+    analyzerPort: 8964,
+    openAnalyzer: true,
+    statsFilename: "stats.json",
+    generateStatsFile: true
   }
-}
+};

@@ -23,7 +23,10 @@ const createLintingRule = () => ({
 module.exports = {
   context: path.resolve(__dirname, "../"),
   entry: {
-    app: "./src/main.js"
+    app: "./src/main.js",
+    vendors:[
+      'vue','vue-i18n','vue-router'
+    ],
   },
   output: {
     path: config.build.assetsRoot,
@@ -48,11 +51,30 @@ module.exports = {
         loader: "vue-loader",
         options: vueLoaderConfig
       },
+      //i18n directive command support
       {
         resourceQuery: /blockType=i18n/,
         type: "javascript/auto",
         loader: "@kazupon/vue-i18n-loader"
       },
+      //Vuetify Sass
+      // {
+      //   test: /\.s(c|a)ss$/,
+      //   use: [
+      //     "vue-style-loader",
+      //     "css-loader",
+      //     {
+      //       loader: "sass-loader",
+      //       options: {
+      //         implementation: require("sass"),
+      //         sassOptions: {
+      //           fiber: require("fibers"),
+      //           indentedSyntax: true
+      //         }
+      //       }
+      //     }
+      //   ]
+      // },
       {
         test: /\.js$/,
         loader: "babel-loader",

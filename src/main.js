@@ -6,15 +6,17 @@ import router from './router'
 
 /* ===================== Plugins Begin ==================== */
 import { i18n } from './plugins/vue-i18n'
-
-Vue.config.productionTip = false
+// import vuetify from './plugins/vuetify'
 
 /* ===================== Plugins End ==================== */
+
+Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   i18n,
+  // vuetify,
   router,
   components: { App },
   template: '<App/>'

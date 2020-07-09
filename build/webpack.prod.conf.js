@@ -13,7 +13,9 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const { VueLoaderPlugin } = require("vue-loader");
-const { transformToRequire } = require('./vue-loader.conf')
+const { transformToRequire, analyzOption } = require("./vue-loader.conf");
+const VuetifyLoaderPlugin  = require('vuetify-loader/lib/plugin')
+const { default: chalk } = require('chalk')
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
@@ -47,22 +49,40 @@ const webpackConfig = merge(baseWebpackConfig, {
       maxAsyncRequests: 5, //异步模块,一次最多只能被加载5个,
       maxInitialRequests: 3, //入口模块最多只能加载3个
       name: true, //拆分出来块的名字(Chunk Names)，默认由块名和hash值自动生成；设置为true则表示根据模块和缓存组秘钥自动生成
+      automaticNameDelimiter: "~", //打包分隔符
       cacheGroups: {
         default: {
           minChunks: 2,
           reuseExistingChunk: true
         },
         //packing repeat coding
-        vendor: {
+        vendors: {
           chunks: "all",
+          test: /(vue|vue-i18n|vue-router)/,
           minChunks: 2,
-          name: "vendor"
+          priority: 100,
+          name: "vendors"
+        },
+        // vuetify: {
+        //   // 将体积较大的vuetify单独提取包，指定页面需要的时候再异步加载
+        //   test: /vuetify/,
+        //   priority: 100, // 设置高于async-commons，避免打包到async-common中
+        //   name: "vuetify",
+        //   chunks: "async"
+        // },
+        //packing 异步加载的lib
+        "async-commons": {
+          chunks: "async",
+          minChunks: 2,
+          priority: 90,
+          name: "async-commons"
         },
         //packing third dependencies lib package
         commons: {
           chunks: "all",
           name: "commons",
-          minChunks: Infinity
+          minChunks: 2,
+          priority: 80
         }
       }
     }
@@ -160,7 +180,20 @@ const webpackConfig = merge(baseWebpackConfig, {
         ignore: [".*"]
       }
     ]),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    // see https://vuetifyjs.com/zh-Hans/customization/a-la-carte/#vueconfigjs-installation
+    new VuetifyLoaderPlugin({
+      match(originalTag, { kebabTag, camelTag, path, component }) {
+        if (kebabTag.startsWith("core-")) {
+          return [
+            camelTag,
+            `import ${camelTag} from '@/components/core/${camelTag.substring(
+              4
+            )}.vue'`
+          ];
+        }
+      }
+    })
   ]
 });
 
@@ -183,8 +216,19 @@ if (config.build.productionGzip) {
 }
 
 if (config.build.bundleAnalyzerReport) {
+  console.log(
+    chalk.bgGreen(
+      "process.env.npm_config_report",
+      process.env.npm_config_report
+    )
+  );
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-  webpackConfig.plugins.push(new BundleAnalyzerPlugin())
+  webpackConfig.plugins.push(
+    new BundleAnalyzerPlugin(Object.assign(analyzOption,{
+      analyzerPort: 8889,
+      openAnalyzer: true
+    }))
+  );
 }
 
 module.exports = webpackConfig
