@@ -1,0 +1,13 @@
+{
+  "port": 8848,
+  "bind": "localhost",
+  "browser": ["firefox"],
+  "files": ["./dist/**/*.{html,htm,css,js}"],
+  "index": "index.html",
+  "server": ["./dist"],
+  "interval": 500,
+  "delay": 1000,
+  "quiet": false,
+  "open": true,
+  "http2": false
+}
