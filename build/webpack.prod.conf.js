@@ -37,6 +37,12 @@ const webpackConfig = merge(baseWebpackConfig, {
     filename: utils.assetsPath("js/[name].[chunkhash].js"),
     chunkFilename: utils.assetsPath("js/[id].[chunkhash].js")
   },
+  // externals at dll package
+  externals: {
+    // 'vue': 'Vue',
+    // 'vue-router': 'VueRouter',
+    // 'vue-i18n': 'VueI18n'
+  },
   optimization: {
     // Setting optimization.runtimeChunk to true adds an additonal chunk to each entrypoint containing only the runtime.
     // The value single instead creates a runtime file to be shared for all generated chunks
@@ -188,18 +194,36 @@ const webpackConfig = merge(baseWebpackConfig, {
     // see https://vuetifyjs.com/zh-Hans/customization/a-la-carte/#vueconfigjs-installation
     new VuetifyLoaderPlugin({
       match(originalTag, { kebabTag, camelTag, path, component }) {
-        if (kebabTag.startsWith("core-")) {
-          return [
-            camelTag,
-            `import ${camelTag} from '@/components/core/${camelTag.substring(
-              4
-            )}.vue'`
-          ];
-        }
+        // if (kebabTag.startsWith("core-")) {
+        //   return [
+        //     camelTag,
+        //     `import ${camelTag} from '@/components/core/${camelTag.substring(
+        //       4
+        //     )}.vue'`
+        //   ];
+        // }
       }
-    })
+    }),
   ]
 });
+
+if(config.common.needDll){
+  webpackConfig.plugins.push(
+    new webpack.DllReferencePlugin({
+      context:process.cwd(),
+      manifest: require(path.resolve(config.common.dllPath,"vue.dll.manifest.json"))
+    })
+  );
+
+  const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
+  webpackConfig.plugins.push(
+    new AddAssetHtmlPlugin([
+      {
+        filepath:path.resolve(__dirname,'../ci/lib/vue.dll.js'),
+      }
+    ])
+  );
+}
 
 if (config.build.productionGzip) {
   const CompressionWebpackPlugin = require('compression-webpack-plugin')
