@@ -16,6 +16,7 @@ const { VueLoaderPlugin } = require("vue-loader");
 const { transformToRequire, analyzOption } = require("./vue-loader.conf");
 const VuetifyLoaderPlugin  = require('vuetify-loader/lib/plugin')
 const { default: chalk } = require('chalk')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
@@ -41,6 +42,9 @@ const webpackConfig = merge(baseWebpackConfig, {
     // The value single instead creates a runtime file to be shared for all generated chunks
     runtimeChunk: "single",
     minimize: env === "production" ? true : false, // only Production Mode compress js
+    minimizer:[
+      new OptimizeCssAssetsPlugin({})
+    ],
     //see detail http://webpack.html.cn/plugins/split-chunks-plugin.html
     splitChunks: {
       chunks: "all", //officail sugguest
@@ -92,15 +96,15 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       "process.env": env
     }),
-    new UglifyJsPlugin({
-      uglifyOptions: {
-        compress: {
-          warnings: false
-        }
-      },
-      sourceMap: config.build.productionSourceMap,
-      parallel: true
-    }),
+    // new UglifyJsPlugin({
+    //   uglifyOptions: {
+    //     compress: {
+    //       warnings: false
+    //     }
+    //   },
+    //   sourceMap: config.build.productionSourceMap,
+    //   parallel: true
+    // }),
     // extract css into its own file
     // new ExtractTextPlugin({
     //   filename: utils.assetsPath("css/[name].[contenthash].css"),
