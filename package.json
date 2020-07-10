@@ -14,7 +14,8 @@
     "build": "node build/build.js",
     "analyz": "cross-env npm_config_report=true node build/build.js",
     "serve": "lite-server -c ci/bs-config.json",
-    "valid:serve":"run-s build serve"
+    "dll": "webpack --config build/webpack.dll.conf.js",
+    "valid:serve": "run-s build serve"
   },
   "dependencies": {
     "vue": "^2.6.11",
@@ -42,6 +43,7 @@
     "babel-register": "^6.22.0",
     "chalk": "^2.0.1",
     "chromedriver": "^2.27.2",
+    "clean-webpack-plugin": "^3.0.0",
     "compression-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^7.0.2",
