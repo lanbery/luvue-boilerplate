@@ -3,6 +3,7 @@
  */
 import Vue from 'vue'
 import Vuetify, { VApp } from 'vuetify/lib'
+import minifyTheme from 'minify-css-string'
 
 Vue.use(Vuetify, {
   comments: {
@@ -10,6 +11,14 @@ Vue.use(Vuetify, {
   }
 })
 
-const opts = {}
+const opts = {
+  theme: {
+    options: { minifyTheme },
+    themeCache: {
+      get: key => localStorage.getItem(key),
+      set: (key, value) => localStorage.setItem(key, value)
+    }
+  }
+}
 
 export default new Vuetify(opts)

@@ -48,9 +48,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // The value single instead creates a runtime file to be shared for all generated chunks
     runtimeChunk: "single",
     minimize: env === "production" ? true : false, // only Production Mode compress js
-    minimizer:[
-      new OptimizeCssAssetsPlugin({})
-    ],
+    minimizer: [new OptimizeCssAssetsPlugin({})],
     //see detail http://webpack.html.cn/plugins/split-chunks-plugin.html
     splitChunks: {
       chunks: "all", //officail sugguest
@@ -80,6 +78,14 @@ const webpackConfig = merge(baseWebpackConfig, {
         //   name: "vuetify",
         //   chunks: "async"
         // },
+        "commons-css": {
+          test: /\.(css|sass|scss)$/,
+          name: "commons-css",
+          chunks: "all",
+          minChunks: 2,
+          priority: 90,
+          reuseExistingChunk: true
+        },
         //packing 异步加载的lib
         "async-commons": {
           chunks: "async",
@@ -102,15 +108,15 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       "process.env": env
     }),
-    // new UglifyJsPlugin({
-    //   uglifyOptions: {
-    //     compress: {
-    //       warnings: false
-    //     }
-    //   },
-    //   sourceMap: config.build.productionSourceMap,
-    //   parallel: true
-    // }),
+    new UglifyJsPlugin({
+      uglifyOptions: {
+        compress: {
+          warnings: false
+        }
+      },
+      sourceMap: config.build.productionSourceMap,
+      parallel: true
+    }),
     // extract css into its own file
     // new ExtractTextPlugin({
     //   filename: utils.assetsPath("css/[name].[contenthash].css"),
@@ -121,8 +127,8 @@ const webpackConfig = merge(baseWebpackConfig, {
     //   allChunks: true
     // }),
     new MiniCssExtractPlugin({
-      filename: utils.assetsPath("css/[name].[contenthash].css"),
-      allChunks: true
+      filename: utils.assetsPath("css/[name].[contenthash].css")
+      //      allChunks: true
     }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
@@ -203,7 +209,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         //   ];
         // }
       }
-    }),
+    })
   ]
 });
 
@@ -245,7 +251,7 @@ if (config.build.productionGzip) {
 
 if (config.build.bundleAnalyzerReport) {
   console.log(
-    chalk.bgGreen(
+    chalk.magenta(
       "process.env.npm_config_report",
       process.env.npm_config_report
     )

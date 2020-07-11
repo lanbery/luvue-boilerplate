@@ -17,3 +17,6 @@ selenium-debug.log
 *.njsproj
 *.sln
 *.log
+
+# ignore customized
+build/stats.json
